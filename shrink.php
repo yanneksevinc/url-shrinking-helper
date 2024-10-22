@@ -112,7 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <h2 class="mb-3">Raw Output</h2>
                 <pre class="bg-dark text-white p-3 rounded">
                     <?php foreach ($results as $result): ?>
-                        <?= htmlspecialchars($result['shortened']) . "\n" ?>
+                        <?= htmlspecialchars(trim($result['shortened'])) . "\n" ?>
                     <?php endforeach; ?>
                 </pre>
             <?php else: ?>
@@ -131,6 +131,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </ul>
             <?php endif; ?>
         <?php endif; ?>
+        <div class="mt-4 text-center">
+            <a href="index.html" class="btn btn-primary">Back to Form</a>
+        </div>
     </div>
 </body>
 </html>
