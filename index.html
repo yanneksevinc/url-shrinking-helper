@@ -53,7 +53,7 @@
             <h2 class="mb-3">Results</h2>
             <ul id="resultsList" class="list-group"></ul>
             <div class="mt-4 text-center">
-                <a href="index.html" class="btn btn-primary">Back to Form</a>
+                <a href="index.html" class="btn btn-primary">Reset Form</a>
             </div>
         </div>
     </div>
@@ -76,7 +76,7 @@
 
                 function processBatch() {
                     const batchUrls = urls.slice(currentBatch * batchSize, (currentBatch + 1) * batchSize);
-                    $.post('shrink.php', { urls: batchUrls, redirections: redirections, raw_output: rawOutput }, function(response) {
+                    $.post('shrink.php', { urls: batchUrls.join('\n'), redirections: redirections, raw_output: rawOutput }, function(response) {
                         results = results.concat(response);
                         currentBatch++;
                         const progress = (currentBatch / totalBatches) * 100;
@@ -88,7 +88,9 @@
                         } else {
                             displayResults(results);
                         }
-                    }, 'json');
+                    }, 'json').fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX Error: " + textStatus + ", " + errorThrown);
+                    });
                 }
 
                 function displayResults(results) {
