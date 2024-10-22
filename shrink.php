@@ -1,8 +1,8 @@
 <?php
-function getRandomShortener($config, $usedShorteners) {
+function getRandomShortener($config, $usedShorteners, $lastUsedIndex) {
     $availableShorteners = [];
     foreach ($config as $index => $shortener) {
-        if (!in_array($index, $usedShorteners)) {
+        if (!in_array($index, $usedShorteners) && $index !== $lastUsedIndex) {
             $availableShorteners[] = $index;
         }
     }
@@ -16,9 +16,10 @@ function shortenUrl($url, $config, $redirections) {
     $shortenedUrl = $url;
     $usedShorteners = [];
     $shortenerCounts = array_fill(0, count($config), 0);
+    $lastUsedIndex = null;
 
     for ($i = 0; $i < $redirections; $i++) {
-        $shortenerIndex = getRandomShortener($config, $usedShorteners);
+        $shortenerIndex = getRandomShortener($config, $usedShorteners, $lastUsedIndex);
         if ($shortenerIndex === null) {
             throw new Exception("No more shorteners available.");
         }
@@ -40,6 +41,7 @@ function shortenUrl($url, $config, $redirections) {
         }
 
         $shortenedUrl = $response;
+        $lastUsedIndex = $shortenerIndex;
     }
 
     return $shortenedUrl;
