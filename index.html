@@ -28,7 +28,7 @@
 <body>
     <div class="container mt-5">
         <h1 class="text-center mb-4">URL Shortener</h1>
-        <form action="shrink.php" method="post">
+        <form id="shortenForm">
             <div class="form-group">
                 <label for="urls">Enter URLs (one per line):</label>
                 <textarea class="form-control" name="urls" id="urls" rows="10" cols="50"></textarea>
@@ -43,6 +43,76 @@
             </div>
             <button type="submit" class="btn btn-primary">Shorten URLs</button>
         </form>
+        <div id="progress" class="mt-4" style="display: none;">
+            <div class="progress">
+                <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+            <p id="progressText" class="mt-2">0% Complete</p>
+        </div>
+        <div id="results" class="mt-4" style="display: none;">
+            <h2 class="mb-3">Results</h2>
+            <ul id="resultsList" class="list-group"></ul>
+            <div class="mt-4 text-center">
+                <a href="index.html" class="btn btn-primary">Back to Form</a>
+            </div>
+        </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#shortenForm').on('submit', function(e) {
+                e.preventDefault();
+                const urls = $('#urls').val().split('\n').map(url => url.trim()).filter(url => url !== '');
+                const redirections = $('#redirections').val();
+                const rawOutput = $('#raw_output').is(':checked');
+                const batchSize = 10;
+                const totalBatches = Math.ceil(urls.length / batchSize);
+                let currentBatch = 0;
+                let results = [];
+
+                $('#progress').show();
+                $('#results').hide();
+
+                function processBatch() {
+                    const batchUrls = urls.slice(currentBatch * batchSize, (currentBatch + 1) * batchSize);
+                    $.post('shrink.php', { urls: batchUrls, redirections: redirections, raw_output: rawOutput }, function(response) {
+                        results = results.concat(response);
+                        currentBatch++;
+                        const progress = (currentBatch / totalBatches) * 100;
+                        $('#progressBar').css('width', progress + '%').attr('aria-valuenow', progress);
+                        $('#progressText').text(progress.toFixed(2) + '% Complete');
+
+                        if (currentBatch < totalBatches) {
+                            processBatch();
+                        } else {
+                            displayResults(results);
+                        }
+                    }, 'json');
+                }
+
+                function displayResults(results) {
+                    $('#progress').hide();
+                    $('#results').show();
+                    $('#resultsList').empty();
+
+                    if (rawOutput) {
+                        const rawOutputText = results.map(result => result.shortened).join('\n');
+                        $('#resultsList').append(`<pre class="bg-dark text-white p-3 rounded">${rawOutputText}</pre>`);
+                    } else {
+                        results.forEach(result => {
+                            const listItem = `<li class="list-group-item bg-dark text-white">
+                                                Original URL: ${result.original}<br>
+                                                ${result.error ? 'Error: ' + result.error : 'Shortened URL: <a href="' + result.shortened + '" target="_blank" class="text-primary">' + result.shortened + '</a>'}
+                                              </li>`;
+                            $('#resultsList').append(listItem);
+                        });
+                    }
+                }
+
+                processBatch();
+            });
+        });
+    </script>
 </body>
 </html>
