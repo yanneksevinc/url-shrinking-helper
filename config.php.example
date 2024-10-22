@@ -1,0 +1,16 @@
+<?php
+return [
+    [
+        'api' => 'http://ouo.io/api/tJ2aRHCn?s={url}',
+        'limit' => 2,
+    ],
+    [
+        'api' => 'https://dz4link.com/api?api=92ac8bf4576d75ff5bbc3cff9e9a393a5dad79b9&url={url}&format=text',
+        'limit' => 1,
+    ],
+    [
+        'api' => 'https://fc.lc/api?api=c55c1f091abf3b6a302abcdd30b06feb8d2c06a4&url={url}&format=text',
+        'limit' => 1,
+    ],
+    // Add more shorteners as needed
+];
