@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URL Shortener</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .form-control, .form-control:focus {
+            background-color: #1e1e1e;
+            color: #ffffff;
+            border-color: #333333;
+        }
+        .btn-primary {
+            background-color: #343a40;
+            border-color: #343a40;
+        }
+        .btn-primary:hover {
+            background-color: #23272b;
+            border-color: #1d2124;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">URL Shortener</h1>
+        <form action="shrink.php" method="post">
+            <div class="form-group">
+                <label for="urls">Enter URLs (one per line):</label>
+                <textarea class="form-control" name="urls" id="urls" rows="10" cols="50"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="redirections">Number of Redirections:</label>
+                <input type="number" class="form-control" name="redirections" id="redirections" value="3" min="1">
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" name="raw_output" id="raw_output">
+                <label class="form-check-label" for="raw_output">Raw Output</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Shorten URLs</button>
+        </form>
+    </div>
+</body>
+</html>
